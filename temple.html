@@ -4,7 +4,7 @@
 		<title>Super projet de WEBGL</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-		<link type="text/css" rel="stylesheet" href="../../main.css">
+		<link type="text/css" rel="stylesheet" href="../main.css">
 	</head>
 	<body>
 
@@ -15,17 +15,18 @@
 
 
 		<script type="module">
-			import * as THREE from '../../../build/three.module.js';
-			import Stats from '../../jsm/libs/stats.module.js';
-			import { FirstPersonControls } from '../../jsm/controls/FirstPersonControls.js';
-			import { GUI } from '../../jsm/libs/dat.gui.module.js';
-			import { FBXLoader } from '../../jsm/loaders/FBXLoader.js';
+			import * as THREE from '../../build/three.module.js';
+			import Stats from '../jsm/libs/stats.module.js';
+			import { FirstPersonControls } from '../jsm/controls/FirstPersonControls.js';
+			import { GUI } from '../jsm/libs/dat.gui.module.js';
+			import { FBXLoader } from '../jsm/loaders/FBXLoader.js';
 			let camera, scene, renderer, controls, light, gui;
 			let container, stats
 
 			const params = {
 
             Rotation : false,
+            movementSpeed : 0
 
             };
 
@@ -39,14 +40,13 @@
 			function init() {
 
 //Remove overlay
+			
 				const overlay = document.getElementById( 'overlay' );
 				overlay.remove();
 
 				container = document.getElementById( 'container' );
 
-//GUI
-				gui = new GUI();
-                gui.add(params,'Rotation');
+
 
 //camera
 				camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 10000 );
@@ -79,7 +79,7 @@
 
 //skybox
 				scene.background = new THREE.CubeTextureLoader()
-					.setPath('../../textures/cube/skyboxsun25deg/')
+					.setPath('../textures/cube/skyboxsun25deg/')
 					.load(['nx.jpg','px.jpg','py.jpg','ny.jpg','nz.jpg','pz.jpg']);
 
 
@@ -132,7 +132,7 @@
 //FirstPerson
 				controls = new FirstPersonControls( camera, renderer.domElement );
 
-				controls.movementSpeed = 70;
+				controls.movementSpeed = params.movementSpeed;
 				controls.lookSpeed = 0.1;
 				controls.noFly = true;
 				controls.lookVertical = false;
@@ -141,21 +141,34 @@
 			
 				const listener = new THREE.AudioListener();
 				camera.add( listener );
+				const sphere = new THREE.SphereGeometry( 0, 0, 0 );
+				const inv = new THREE.Mesh( sphere, texture_sol );
+				inv.position.set(0, 0, 0 );
+				scene.add( inv );
 				const audioLoader = new THREE.AudioLoader();
 				const sound1 = new THREE.PositionalAudio( listener );
 				audioLoader.load( 'Sons/BLACKPINK_bombayah.mp3', function ( buffer ) {
 
 					sound1.setBuffer( buffer );
 					sound1.setRefDistance( 20 );
+					sound1.setVolume( 10);
 					sound1.play();
 
 				} );
-				object.add( sound1 );
+				inv.add( sound1 );
 			
 
 //stats
 				stats = new Stats();
 				container.appendChild( stats.dom );
+//GUI
+				gui = new GUI();
+                gui.add(params,'Rotation');
+                gui.add( params, 'movementSpeed' ).min( 0 ).max( 1000 ).step( 2 ).onChange(function () {
+
+					controls.movementSpeed =  params.movementSpeed ;
+
+				} );
 
 				window.addEventListener( 'resize', onWindowResize);
 
