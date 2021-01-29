@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Super projet de WEBGL</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link type="text/css" rel="stylesheet" href="../main.css">
+	</head>
+	<body>
+
+		<div id="overlay">
+			<button id="startButton">Play</button>
+		</div>
+		<div id="container"></div>
+
+
+		<script type="module">
+
+			import * as THREE from '../../build/three.module.js';
+			import Stats from '../jsm/libs/stats.module.js';
+			import { FirstPersonControls } from '../jsm/controls/FirstPersonControls.js';
+			import { GUI } from '../jsm/libs/dat.gui.module.js';
+
+			let camera, scene, renderer, controls, light, gui;
+			let container, stats
+			let mesh,mesh2,mesh3;
+
+			const params = {
+
+            Rotation : false
+
+            };
+
+            const clock = new THREE.Clock();
+
+            const startButton = document.getElementById( 'startButton' );
+			startButton.addEventListener( 'click', init );
+
+		
+
+			function init() {
+
+//Remove overlay
+				const overlay = document.getElementById( 'overlay' );
+				overlay.remove();
+
+				container = document.getElementById( 'container' );
+
+//GUI
+				gui = new GUI();
+                gui.add(params,'Rotation');
+
+//camera
+				camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 10000 );
+				camera.position.set( 0, 25, 0 );
+//scene
+				scene = new THREE.Scene();
+
+//fog
+				scene.fog = new THREE.Fog( 0xffffff, 0, 15000 );
+
+
+//lumières
+				scene.add( new THREE.AmbientLight( 0xffffff, 0.1 ) );
+
+				light = new THREE.DirectionalLight( 0xffffff, 1 );
+				light.angle = Math.PI / 5;
+				light.position.set(20,100,20);
+				light.castShadow = true;
+				scene.add(light);
+
+				
+
+			
+
+
+//skybox
+				scene.background = new THREE.CubeTextureLoader()
+					.setPath('../textures/cube/skyboxsun25deg/')
+					.load(['nx.jpg','px.jpg','py.jpg','ny.jpg','nz.jpg','pz.jpg']);
+
+
+
+//sol
+				const texture_sol = new THREE.TextureLoader().load('textures/sol.jpg');
+				texture_sol.wrapS = THREE.RepeatWrapping;
+				texture_sol.wrapT = THREE.RepeatWrapping;
+				texture_sol.repeat.set( 4, 4 );
+				const geometry_sol = new THREE.BoxBufferGeometry(40000,10,40000);
+				const material_sol = new THREE.MeshPhongMaterial( {map: texture_sol} ); 
+
+				const sol = new THREE.Mesh(geometry_sol, material_sol);
+				sol.receiveShadow = true;
+				sol.castShadow = true;
+				scene.add(sol);
+
+				
+
+				renderer = new THREE.WebGLRenderer( { antialias: true } );
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				container.appendChild( renderer.domElement );
+				renderer.shadowMap.enabled = true;
+
+
+//FirstPerson
+				controls = new FirstPersonControls( camera, renderer.domElement );
+
+				controls.movementSpeed = 70;
+				controls.lookSpeed = 0.1;
+				controls.noFly = true;
+				controls.lookVertical = false;
+
+//stats
+				stats = new Stats();
+				container.appendChild( stats.dom );
+
+				window.addEventListener( 'resize', onWindowResize);
+
+				animate();
+
+			}
+
+			function onWindowResize() {
+
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+				
+
+				renderer.setSize( window.innerWidth, window.innerHeight );
+
+				controls.handleResize();
+
+			}
+
+		function animate() {
+
+				requestAnimationFrame( animate );
+
+
+				const delta = clock.getDelta();
+
+				controls.update( delta );
+				renderer.render( scene, camera );
+				if (params.Rotation){
+                    camera.position.x += 10;
+                if(camera.position.x >= 3000){
+                    camera.position.x = 0;
+                }
+
+                }
+                stats.update();
+
+			}
+
+		</script>
+
+	</body>
+</html>
