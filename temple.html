@@ -29,8 +29,9 @@
 
             Rotation : false,
             movementSpeed : 0,
+            Magic : false,
             fog_distance : 15000,
-            Magic : false
+            fog_color : 0xffffff
 
             };
 
@@ -59,8 +60,8 @@
 				scene = new THREE.Scene();
 
 //fog
+				
 				scene.fog = new THREE.Fog( 0xffffff, 0, 15000 );
-
 
 //lumières
 				const hemiLight = new THREE.HemisphereLight( 0x404040, 0x444444 );
@@ -142,7 +143,6 @@
 //FirstPerson
 				controls = new FirstPersonControls( camera, renderer.domElement );
 
-				controls.movementSpeed = params.movementSpeed;
 				controls.lookSpeed = 0.1;
 				controls.noFly = true;
 				controls.lookVertical = false;
@@ -210,6 +210,9 @@
 			}
 				});
 
+				gui.add(params,'fog_color').min( 0x000000 ).max( 0xffffff ).step( 1 ).onChange(function (){
+					scene.fog = new THREE.Fog( params.fog_color, 0, params.fog_distance );
+				});
 
 				window.addEventListener( 'resize', onWindowResize);
 
