@@ -11,17 +11,18 @@
 		<div id="overlay">
 			<button id="startButton">Play</button>
 		</div>
+		<div id="container"></div>
 
 
 		<script type="module">
 
 			import * as THREE from '../../../build/three.module.js';
-			//import { OrbitControls } from '../../jsm/controls/OrbitControls.js';
-			//import { PointerLockControls } from '../../jsm/controls/PointerLockControls.js';
+			import Stats from '../../jsm/libs/stats.module.js';
 			import { FirstPersonControls } from '../../jsm/controls/FirstPersonControls.js';
 			import { GUI } from '../../jsm/libs/dat.gui.module.js';
 
 			let camera, scene, renderer, controls, light, gui;
+			let container, stats
 			let mesh,mesh2,mesh3;
 
 			const params = {
@@ -42,6 +43,8 @@
 //Remove overlay
 				const overlay = document.getElementById( 'overlay' );
 				overlay.remove();
+
+				container = document.getElementById( 'container' );
 
 //GUI
 				gui = new GUI();
@@ -96,7 +99,7 @@
 				renderer = new THREE.WebGLRenderer( { antialias: true } );
 				renderer.setPixelRatio( window.devicePixelRatio );
 				renderer.setSize( window.innerWidth, window.innerHeight );
-				document.body.appendChild( renderer.domElement );
+				container.appendChild( renderer.domElement );
 				renderer.shadowMap.enabled = true;
 
 
@@ -107,6 +110,10 @@
 				controls.lookSpeed = 0.1;
 				controls.noFly = true;
 				controls.lookVertical = false;
+
+//stats
+				stats = new Stats();
+				container.appendChild( stats.dom );
 
 				window.addEventListener( 'resize', onWindowResize);
 
@@ -142,6 +149,7 @@
                 }
 
                 }
+                stats.update();
 
 			}
 
