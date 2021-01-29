@@ -45,11 +45,8 @@
 	</head>
 	<body>
 
-		<div id="blocker">
-
-			<div id="instructions">
-				<span style="font-size:36px">Click to play</span>
-
+		<div id="overlay">
+			<button id="startButton">Play</button>
 		</div>
 
 
@@ -71,12 +68,16 @@
 
             const clock = new THREE.Clock();
 
-			init();
-			animate();
+            const startButton = document.getElementById( 'startButton' );
+			startButton.addEventListener( 'click', init );
+
 		
 
 			function init() {
 
+//Remove overlay
+				const overlay = document.getElementById( 'overlay' );
+				overlay.remove();
 
 //GUI
 				gui = new GUI();
@@ -121,36 +122,6 @@
 				scene.add(light);
 
 				
-//firstperson
-				controls = new FirstPersonControls( camera, renderer.domElement );
-				controls.movementSpeed = 1000;
-				controls.lookSpeed = 0.1;
-
-//ecran de démarrage
-				const blocker = document.getElementById( 'blocker' );
-				const instructions = document.getElementById( 'instructions' );
-
-				instructions.addEventListener( 'click', function () {
-
-					controls.lock();
-
-				} );
-
-				controls.addEventListener( 'lock', function () {
-
-					instructions.style.display = 'none';
-					blocker.style.display = 'none';
-
-				} );
-
-				controls.addEventListener( 'unlock', function () {
-
-					blocker.style.display = 'block';
-					instructions.style.display = '';
-
-				} );
-
-
 
 			
 
@@ -184,8 +155,17 @@
 				renderer.shadowMap.enabled = true;
 
 
+//FirstPerson
+				controls = new FirstPersonControls( camera, renderer.domElement );
+
+				controls.movementSpeed = 70;
+				controls.lookSpeed = 0.1;
+				controls.noFly = true;
+				controls.lookVertical = false;
 
 				window.addEventListener( 'resize', onWindowResize);
+
+				animate();
 
 			}
 
@@ -205,8 +185,10 @@
 
 				requestAnimationFrame( animate );
 
-				controls.update( clock.getDelta() );
 
+				const delta = clock.getDelta();
+
+				controls.update( delta );
 				renderer.render( scene, camera );
 				if (params.Rotation){
                     camera.position.x += 10;
