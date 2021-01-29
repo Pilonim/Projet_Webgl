@@ -4,15 +4,15 @@
 		<title>three.js webgl - geometry - cube</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-		<link type="text/css" rel="stylesheet" href="../examples/main.css">
+		<link type="text/css" rel="stylesheet" href="../main.css">
 	</head>
 	<body>
 
 		<script type="module">
 
-			import * as THREE from '../build/three.module.js';
-			import { OrbitControls } from './jsm/controls/OrbitControls.js';
-			import { GUI } from './jsm/libs/dat.gui.module.js';
+			import * as THREE from '../../build/three.module.js';
+			import { OrbitControls } from '../jsm/controls/OrbitControls.js';
+			import { GUI } from '../jsm/libs/dat.gui.module.js';
 
 			let camera, scene, renderer, controls, light, gui;
 			let mesh,mesh2,mesh3;
@@ -67,13 +67,13 @@
 
 //skybox
 				scene.background = new THREE.CubeTextureLoader()
-					.setPath('textures/cube/skyboxsun25deg/')
+					.setPath('../textures/cube/skyboxsun25deg/')
 					.load(['nx.jpg','px.jpg','py.jpg','ny.jpg','nz.jpg','pz.jpg']);
 				
 
-				const texture = new THREE.TextureLoader().load( '../examples/textures/brick_bump.jpg' );
-				const texture2 = new THREE.TextureLoader().load('../examples/textures/brick_diffuse.jpg');
-				const texture3 = new THREE.TextureLoader().load('../examples/textures/brick_roughness.jpg');
+				const texture = new THREE.TextureLoader().load( '../textures/brick_bump.jpg' );
+				const texture2 = new THREE.TextureLoader().load('../textures/brick_diffuse.jpg');
+				const texture3 = new THREE.TextureLoader().load('../textures/brick_roughness.jpg');
 
 
 				const geometry = new THREE.BoxBufferGeometry( 1200, 40, 1200 );
