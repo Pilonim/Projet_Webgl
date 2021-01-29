@@ -45,11 +45,6 @@
 				scene.add(light);
 
 
-
-				
-
-
-
 				renderer = new THREE.WebGLRenderer( { antialias: true } );
 				renderer.setPixelRatio( window.devicePixelRatio );
 				renderer.setSize( window.innerWidth, window.innerHeight );
@@ -69,8 +64,15 @@
 				scene.background = new THREE.CubeTextureLoader()
 					.setPath('../textures/cube/skyboxsun25deg/')
 					.load(['nx.jpg','px.jpg','py.jpg','ny.jpg','nz.jpg','pz.jpg']);
+
+
+
+//sol
 				
 
+
+				
+/*
 				const texture = new THREE.TextureLoader().load( '../textures/brick_bump.jpg' );
 				const texture2 = new THREE.TextureLoader().load('../textures/brick_diffuse.jpg');
 				const texture3 = new THREE.TextureLoader().load('../textures/brick_roughness.jpg');
@@ -300,7 +302,7 @@
 				
 
 				
-			
+			*/
 
 				window.addEventListener( 'resize', onWindowResize, false );
 
