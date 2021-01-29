@@ -4,7 +4,7 @@
 		<title>Super projet de WEBGL</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-		<link type="text/css" rel="stylesheet" href="../main.css">
+		<link type="text/css" rel="stylesheet" href="../../main.css">
 	</head>
 	<body>
 
@@ -15,18 +15,22 @@
 
 
 		<script type="module">
-			import * as THREE from '../../build/three.module.js';
-			import Stats from '../jsm/libs/stats.module.js';
-			import { FirstPersonControls } from '../jsm/controls/FirstPersonControls.js';
-			import { GUI } from '../jsm/libs/dat.gui.module.js';
-			import { FBXLoader } from '../jsm/loaders/FBXLoader.js';
+			import * as THREE from '../../../build/three.module.js';
+			import Stats from '../../jsm/libs/stats.module.js';
+			import { FirstPersonControls } from '../../jsm/controls/FirstPersonControls.js';
+			import { GUI } from '../../jsm/libs/dat.gui.module.js';
+			import { FBXLoader } from '../../jsm/loaders/FBXLoader.js';
+			import { GLTFLoader } from '../../jsm/loaders/GLTFLoader.js';
+
 			let camera, scene, renderer, controls, light, gui;
-			let container, stats
+			let container, stats;
 
 			const params = {
 
             Rotation : false,
-            movementSpeed : 0
+            movementSpeed : 0,
+            fog_distance : 15000,
+            Magic : false
 
             };
 
@@ -79,7 +83,7 @@
 
 //skybox
 				scene.background = new THREE.CubeTextureLoader()
-					.setPath('../textures/cube/skyboxsun25deg/')
+					.setPath('../../textures/cube/skyboxsun25deg/')
 					.load(['nx.jpg','px.jpg','py.jpg','ny.jpg','nz.jpg','pz.jpg']);
 
 
@@ -120,7 +124,13 @@
 					scene.add( object );
 
 				} );
+
+
 				
+
+
+
+
 
 				renderer = new THREE.WebGLRenderer( { antialias: true } );
 				renderer.setPixelRatio( window.devicePixelRatio );
@@ -169,6 +179,38 @@
 					controls.movementSpeed =  params.movementSpeed ;
 
 				} );
+				gui.add( params, 'fog_distance' ).min( 0 ).max( 20000 ).step( 2 ).onChange(function () {
+
+					scene.fog = new THREE.Fog( 0xffffff, 0, params.fog_distance );
+
+				} );
+				gui.add(params,'Magic').onChange(function() {
+					//maison	
+			if (params.Magic){
+				loader.load( 'models/fbx/old-garage/source/1.fbx', function ( object ) {
+
+					object.traverse( function ( child ) {
+
+						if ( child.isMesh ) {
+
+							child.material.map = THREE.ImageUtils.loadTexture( 'models/fbx/olg-garage/textures/');
+							child.scale.set(0.5,0.5,0.5);
+							child.castShadow = true;
+							child.receiveShadow = true;
+
+						}
+
+					} );
+					object.scale.set(0.5,0.5,0.5);
+
+					scene.add( object );
+
+				} );
+			}else {
+				scene.remove(object);
+			}
+				});
+
 
 				window.addEventListener( 'resize', onWindowResize);
 
