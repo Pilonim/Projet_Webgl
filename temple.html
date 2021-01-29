@@ -65,8 +65,8 @@
 
 			const params = {
 
-            Rotation : false
-
+            Rotation : false,
+            Son : false
             };
 
             const clock = new THREE.Clock();
@@ -81,6 +81,7 @@
 //GUI
 				gui = new GUI();
                 gui.add(params,'Rotation');
+                gui.add(params,'Son');
 
 //camera
 				camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 30000 );
@@ -91,6 +92,24 @@
 //fog
 				scene.fog = new THREE.Fog( 0xffffff, 0, 15000 );
 
+//listener
+				if(params.Son){
+					const listener = new THREE.AudioListener();
+					camera.add( listener );
+					const audioLoader = new THREE.AudioLoader();
+					const sound1 = new THREE.PositionalAudio( listener );
+					audioLoader.load( 'sons/BLACKPINK_bombayah.mp3', function ( buffer ) {
+
+						sound1.setBuffer( buffer );
+						sound1.setRefDistance( 20 );
+						sound1.play();
+
+					} );
+					scene.add(sound1);
+				}
+				if(params.Son == false){
+					scene.remove(sound1);
+				}
 
 //lumières
 				scene.add( new THREE.AmbientLight( 0xffffff, 0.1 ) );
