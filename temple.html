@@ -21,9 +21,10 @@
 			import { GUI } from '../../jsm/libs/dat.gui.module.js';
 			import { FBXLoader } from '../../jsm/loaders/FBXLoader.js';
 			import { GLTFLoader } from '../../jsm/loaders/GLTFLoader.js';
+			import { ColladaLoader } from '../../jsm/loaders/ColladaLoader.js';
 
 			let camera, scene, renderer, controls, light, gui;
-			let container, stats;
+			let container, stats, house;
 
 			const params = {
 
@@ -65,7 +66,7 @@
 
 //lumières
 				const hemiLight = new THREE.HemisphereLight( 0x404040, 0x444444 );
-				hemiLight.position.set( 0, 200, 0 );
+				hemiLight.position.set( 0, 150, 0 );
 				scene.add( hemiLight );
 
 				const dirLight = new THREE.DirectionalLight( 0xffffff );
@@ -75,8 +76,16 @@
 				dirLight.shadow.camera.bottom = - 100;
 				dirLight.shadow.camera.left = - 120;
 				dirLight.shadow.camera.right = 120;
+				dirLight.shadow.camera.far = 2000;
 				scene.add( dirLight );
 
+//sphere de la light
+				const geometry1 = new THREE.SphereGeometry( 5, 32, 32 );
+				const material1 = new THREE.MeshBasicMaterial( {color: 0xffff00} );
+				const sphere1 = new THREE.Mesh( geometry1, material1 );
+				sphere1.position.set(0, 200, 100 );
+				scene.add( sphere1 );
+				
 				
 
 			
@@ -99,6 +108,7 @@
 
 				const sol = new THREE.Mesh(geometry_sol, material_sol);
 				sol.receiveShadow = true;
+				sol.castShadow = true;
 				sol.rotation.x = - Math.PI / 2;
 				scene.add(sol);
 
@@ -187,13 +197,13 @@
 				gui.add(params,'Magic').onChange(function() {
 					//maison	
 			if (params.Magic){
-				loader.load( 'models/fbx/old-garage/source/1.fbx', function ( object ) {
+				/*loader.load( 'models/fbx/old-garage/source/1.fbx', function ( object ) {
 
 					object.traverse( function ( child ) {
 
 						if ( child.isMesh ) {
 
-							child.material.map = THREE.ImageUtils.loadTexture( 'models/fbx/olg-garage/textures/');
+							//child.material.map = THREE.ImageUtils.loadTexture( 'models/fbx/old-garage/textures/');
 							child.scale.set(0.5,0.5,0.5);
 							child.castShadow = true;
 							child.receiveShadow = true;
@@ -202,9 +212,30 @@
 
 					} );
 
-					scene.add( object );
+					scene.add( object );*/
+
+				const loadingManager = new THREE.LoadingManager( function () {
+
+
+				house.scale.set(50,50,50);
+				house.position.set(0,1,-800);
+				house.castShadow = true;
+				house.receiveShadow = true;
+				scene.add( house );
 
 				} );
+
+				// collada
+
+				const loader2 = new ColladaLoader( loadingManager );
+				loader2.load( './models/dae/house.dae', function ( collada ) {
+					
+					house = collada.scene;
+					collada.castShadow = true;
+					collada.receiveShadow = true;
+
+				} );
+
 			}else {
 				scene.remove(object);
 			}
