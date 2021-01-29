@@ -10,10 +10,10 @@
 
 		<script type="module">
 
-			import * as THREE from '../../../build/three.module.js';
-			import { OrbitControls } from '../../jsm/controls/OrbitControls.js';
-			import { PointerLockControls } from '../../jsm/controls/PointerLockControls.js';
-			import { GUI } from '../../jsm/libs/dat.gui.module.js';
+			import * as THREE from '../../build/three.module.js';
+			import { OrbitControls } from '../jsm/controls/OrbitControls.js';
+			import { PointerLockControls } from '../jsm/controls/PointerLockControls.js';
+			import { GUI } from '../jsm/libs/dat.gui.module.js';
 
 			let camera, scene, renderer, controls, light, gui;
 			let mesh,mesh2,mesh3;
@@ -65,7 +65,7 @@
 
 //skybox
 				scene.background = new THREE.CubeTextureLoader()
-					.setPath('../../textures/cube/skyboxsun25deg/')
+					.setPath('../textures/cube/skyboxsun25deg/')
 					.load(['nx.jpg','px.jpg','py.jpg','ny.jpg','nz.jpg','pz.jpg']);
 
 
