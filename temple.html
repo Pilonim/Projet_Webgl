@@ -20,10 +20,10 @@
 			import Stats from '../../jsm/libs/stats.module.js';
 			import { FirstPersonControls } from '../../jsm/controls/FirstPersonControls.js';
 			import { GUI } from '../../jsm/libs/dat.gui.module.js';
+			import { FBXLoader } from '../../jsm/loaders/FBXLoader.js';
 
 			let camera, scene, renderer, controls, light, gui;
 			let container, stats
-			let mesh,mesh2,mesh3;
 
 			const params = {
 
@@ -32,6 +32,8 @@
             };
 
             const clock = new THREE.Clock();
+
+            let mixer;
 
             const startButton = document.getElementById( 'startButton' );
 			startButton.addEventListener( 'click', init );
@@ -52,7 +54,7 @@
 
 //camera
 				camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 10000 );
-				camera.position.set( 0, 25, 0 );
+				camera.position.set( 100, 100, 300 );
 //scene
 				scene = new THREE.Scene();
 
@@ -61,13 +63,18 @@
 
 
 //lumières
-				scene.add( new THREE.AmbientLight( 0xffffff, 0.1 ) );
+				const hemiLight = new THREE.HemisphereLight( 0x404040, 0x444444 );
+				hemiLight.position.set( 0, 200, 0 );
+				scene.add( hemiLight );
 
-				light = new THREE.DirectionalLight( 0xffffff, 1 );
-				light.angle = Math.PI / 5;
-				light.position.set(20,100,20);
-				light.castShadow = true;
-				scene.add(light);
+				const dirLight = new THREE.DirectionalLight( 0xffffff );
+				dirLight.position.set( 0, 200, 100 );
+				dirLight.castShadow = true;
+				dirLight.shadow.camera.top = 180;
+				dirLight.shadow.camera.bottom = - 100;
+				dirLight.shadow.camera.left = - 120;
+				dirLight.shadow.camera.right = 120;
+				scene.add( dirLight );
 
 				
 
@@ -86,14 +93,37 @@
 				texture_sol.wrapS = THREE.RepeatWrapping;
 				texture_sol.wrapT = THREE.RepeatWrapping;
 				texture_sol.repeat.set( 4, 4 );
-				const geometry_sol = new THREE.BoxBufferGeometry(40000,10,40000);
+				const geometry_sol = new THREE.PlaneGeometry( 20000, 20000 )
 				const material_sol = new THREE.MeshPhongMaterial( {map: texture_sol} ); 
 
 				const sol = new THREE.Mesh(geometry_sol, material_sol);
 				sol.receiveShadow = true;
-				sol.castShadow = true;
+				sol.rotation.x = - Math.PI / 2;
 				scene.add(sol);
 
+//personnage
+				const loader = new FBXLoader();
+				loader.load( 'models/fbx/Hip Hop Dancing.fbx', function ( object ) {
+
+					mixer = new THREE.AnimationMixer( object );
+
+					const action = mixer.clipAction( object.animations[ 0 ] );
+					action.play();
+
+					object.traverse( function ( child ) {
+
+						if ( child.isMesh ) {
+
+							child.castShadow = true;
+							child.receiveShadow = true;
+
+						}
+
+					} );
+
+					scene.add( object );
+
+				} );
 				
 
 				renderer = new THREE.WebGLRenderer( { antialias: true } );
@@ -139,9 +169,12 @@
 
 
 				const delta = clock.getDelta();
-
 				controls.update( delta );
+
+				if ( mixer ) mixer.update( delta );
+
 				renderer.render( scene, camera );
+
 				if (params.Rotation){
                     camera.position.x += 10;
                 if(camera.position.x >= 3000){
