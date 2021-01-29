@@ -4,7 +4,7 @@
 		<title>Super projet de WEBGL</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-		<link type="text/css" rel="stylesheet" href="../main.css">
+		<link type="text/css" rel="stylesheet" href="../../main.css">
 	</head>
 	<body>
 
@@ -15,11 +15,11 @@
 
 
 		<script type="module">
-			import * as THREE from '../../build/three.module.js';
-			import Stats from '../jsm/libs/stats.module.js';
-			import { FirstPersonControls } from '../jsm/controls/FirstPersonControls.js';
-			import { GUI } from '../jsm/libs/dat.gui.module.js';
-			import { FBXLoader } from '../jsm/loaders/FBXLoader.js';
+			import * as THREE from '../../../build/three.module.js';
+			import Stats from '../../jsm/libs/stats.module.js';
+			import { FirstPersonControls } from '../../jsm/controls/FirstPersonControls.js';
+			import { GUI } from '../../jsm/libs/dat.gui.module.js';
+			import { FBXLoader } from '../../jsm/loaders/FBXLoader.js';
 			let camera, scene, renderer, controls, light, gui;
 			let container, stats
 
@@ -79,7 +79,7 @@
 
 //skybox
 				scene.background = new THREE.CubeTextureLoader()
-					.setPath('../textures/cube/skyboxsun25deg/')
+					.setPath('../../textures/cube/skyboxsun25deg/')
 					.load(['nx.jpg','px.jpg','py.jpg','ny.jpg','nz.jpg','pz.jpg']);
 
 
