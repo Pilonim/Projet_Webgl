@@ -22,6 +22,7 @@
 			import { GUI } from '../jsm/libs/dat.gui.module.js';
 			import { FBXLoader } from '../jsm/loaders/FBXLoader.js';
 			import { GLTFLoader } from '../jsm/loaders/GLTFLoader.js';
+			import { ColladaLoader } from '../jsm/loaders/ColladaLoader.js';
 
 
 			let camera, scene, renderer, controls, light, gui;
@@ -31,7 +32,7 @@
 
             Rotation : false,
             //movementSpeed : 0,
-            Magic : false,
+            Magic : Magic,
             fog_distance : 15000,
             fog_color : 0xffffff
 
@@ -64,6 +65,37 @@
 
             const startButton = document.getElementById( 'startButton' );
 			startButton.addEventListener( 'click', init );
+
+			function Magic(){
+				//maison	
+			if (params.Magic){
+
+				const loadingManager = new THREE.LoadingManager( function () {
+
+
+				house.scale.set(50,50,50);
+				house.position.set(0,1,-800);
+				house.castShadow = true;
+				house.receiveShadow = true;
+				scene.add( house );
+				obects.push(house);
+
+				} );
+
+				// collada
+
+				const loader2 = new ColladaLoader( loadingManager );
+				loader2.load( './models/dae/house.dae', function ( collada ) {
+					
+					house = collada.scene;
+					collada.castShadow = true;
+					collada.receiveShadow = true;
+
+				} );
+
+			}
+			controls.lock();
+			}
 
 			function init() {
 
@@ -293,57 +325,7 @@
 					scene.fog = new THREE.Fog( 0xffffff, 0, params.fog_distance );
 
 				} );
-				gui.add(params,'Magic').onChange(function() {
-					//maison	
-			if (params.Magic){
-				/*loader.load( 'models/fbx/old-garage/source/1.fbx', function ( object ) {
-
-					object.traverse( function ( child ) {
-
-						if ( child.isMesh ) {
-
-							//child.material.map = THREE.ImageUtils.loadTexture( 'models/fbx/old-garage/textures/');
-							child.scale.set(0.5,0.5,0.5);
-							child.castShadow = true;
-							child.receiveShadow = true;
-
-						}
-
-					} );
-<<<<<<< HEAD
-					objects.push(object);
-					scene.add( object );
-					
-
-				} );
-=======
-
-					scene.add( object );*/
-
-				const loadingManager = new THREE.LoadingManager( function () {
-
-
-				house.scale.set(50,50,50);
-				house.position.set(0,1,-800);
-				house.castShadow = true;
-				house.receiveShadow = true;
-				scene.add( house );
-
-				} );
-
-				// collada
-
-				const loader2 = new ColladaLoader( loadingManager );
-				loader2.load( './models/dae/house.dae', function ( collada ) {
-					
-					house = collada.scene;
-					collada.castShadow = true;
-					collada.receiveShadow = true;
-
-				} );
-
-			}
-				});
+				gui.add(params,'Magic');
 
 				gui.add(params,'fog_color').min( 0x000000 ).max( 0xffffff ).step( 1 ).onChange(function (){
 					scene.fog = new THREE.Fog( params.fog_color, 0, params.fog_distance );
