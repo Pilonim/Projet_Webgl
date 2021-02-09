@@ -15,13 +15,13 @@
 
 
 		<script type="module">
-			import * as THREE from 'build/three.module.js';
-			import Stats from 'jsm/libs/stats.module.js';
-			import { PointerLockControls } from 'jsm/controls/PointerLockControls.js';
-			import { GUI } from 'jsm/libs/dat.gui.module.js';
-			import { FBXLoader } from 'jsm/loaders/FBXLoader.js';
-			import { GLTFLoader } from 'jsm/loaders/GLTFLoader.js';
-			import { ColladaLoader } from 'jsm/loaders/ColladaLoader.js';
+			import * as THREE from './build/three.module.js';
+			import Stats from './jsm/libs/stats.module.js';
+			import { PointerLockControls } from './jsm/controls/PointerLockControls.js';
+			import { GUI } from './jsm/libs/dat.gui.module.js';
+			import { FBXLoader } from './jsm/loaders/FBXLoader.js';
+			import { GLTFLoader } from './jsm/loaders/GLTFLoader.js';
+			import { ColladaLoader } from './jsm/loaders/ColladaLoader.js';
 
 
 			let camera, scene, renderer, controls, light, gui;
@@ -222,13 +222,13 @@
 
 //skybox
 				scene.background = new THREE.CubeTextureLoader()
-					.setPath('../textures/cube/skyboxsun25deg/')
+					.setPath('./textures/cube/skyboxsun25deg/')
 					.load(['nx.jpg','px.jpg','py.jpg','ny.jpg','nz.jpg','pz.jpg']);
 
 
 
 //sol
-				const texture_sol = new THREE.TextureLoader().load('textures/sol.jpg');
+				const texture_sol = new THREE.TextureLoader().load('./textures/sol.jpg');
 				texture_sol.wrapS = THREE.RepeatWrapping;
 				texture_sol.wrapT = THREE.RepeatWrapping;
 				texture_sol.repeat.set( 4, 4 );
@@ -243,7 +243,7 @@
 
 //personnage
 				const loader = new FBXLoader();
-				loader.load( 'models/fbx/Hip Hop Dancing.fbx', function ( object ) {
+				loader.load( './models/fbx/Hip Hop Dancing.fbx', function ( object ) {
 
 					mixer = new THREE.AnimationMixer( object );
 
